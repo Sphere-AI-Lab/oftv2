@@ -1,6 +1,5 @@
-# POET
-The official project page of POET, "Reparameterized LLM Training via Orthogonal
-Equivalence Transformation". 
+# Orthogonal Finetuning Family
+The official project page of the collection of orthogonal finetuning projects.
 
 <!--
 🎉 We are happy to announce that our paper "CReparameterized LLM Training via Orthogonal
