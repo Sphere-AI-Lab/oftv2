@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>OFT</title>
+  <title>OFTv2</title>
     <style>
         .hidden {
             display: none;
@@ -14,7 +14,7 @@
         content="A Massive Multi-discipline Multimodal Understanding and Reasoning Benchmark for Expert AGI">
   <meta name="keywords" content="OFT, Orthogonal Finetuning">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Orthogonal Finetuning Family</title>
+  <title>Orthogonal Finetuning Made Scalable</title>
 
   <link rel="icon" href="./static/images/oft_icon.png">
 
@@ -81,36 +81,31 @@
         <div class="column has-text-centered">
           <h1 class="title is-1 publication-title is-bold">
             <img src="static/images/oft_icon.png" style="width:1em;vertical-align: middle" alt="Logo"/> 
-            <span class="mmmu" style="vertical-align: middle">OFT</span>
+            <span class="mmmu" style="vertical-align: middle">OFTv2</span>
             </h1>
           <h2 class="subtitle is-3 publication-subtitle">
-            <strong>O</strong>rthgonal <strong>F</strong>in<strong>t</strong>uning Family
+            <strong>O</strong>rthgonal <strong>F</strong>in<strong>t</strong>uning Made Scalable
           </h2>
           <div class="is-size-5 publication-authors">
             <span class="author-block">
               <a href="https://github.com/zqiu24" style="text-decoration: none; color: inherit;">Zeju Qiu<sup style="color:#ed4b82;">1</sup></a>,
             </span>
             <span class="author-block">
-              <a href="https://is.mpg.de/" style="text-decoration: none; color: inherit;">Simon Buchholz<sup style="color:#ed4b82;">1</sup></a>,
+              <a href="https://wyliu.com/" style="text-decoration: none; color: inherit;">Weiyang Liu<sup style="color:#ed4b82;">1</sup><sup style="color:#007bff;">2</sup></a>,
             </span>
             <span class="author-block">
-                <a href="https://timx.me/" style="text-decoration: none; color: inherit;">Tim Z. Xiao<sup style="color:#ed4b82;">1</sup></a>,
+              <a href="https://mlg.eng.cam.ac.uk/adrian/" style="text-decoration: none; color: inherit;">Adrian Weller<sup style="color:#6fbf73;">3</sup></a>,
             </span>
             <span class="author-block">
-              <a href="https://is.mpg.de/" style="text-decoration: none; color: inherit;">Maximilian Dax<sup style="color:#ed4b82;">1</sup></a>,
-            </span>
-            <span class="author-block">
-                <a href="https://is.mpg.de/~bs" style="text-decoration: none; color: inherit;">Bernhard Schölkopf<sup style="color:#ed4b82;">1</sup></a>,
-            </span>
-            <span class="author-block">
-              <a href="https://wyliu.com/" style="text-decoration: none; color: inherit;">Weiyang Liu<sup style="color:#ed4b82;">1</sup><sup style="color:#007bff;">2</sup></a>
+                <a href="https://is.mpg.de/~bs" style="text-decoration: none; color: inherit;">Bernhard Schölkopf<sup style="color:#ed4b82;">1</sup></a>
             </span>
             </div>
             <br>
           
           <div class="is-size-5 publication-authors">
             <span class="author-block"><sup style="color:#ed4b82;">1</sup>Max Planck Institute for Intelligent Systems, Tübingen,</span>
-            <span class="author-block"><sup style="color:#007bff;">2</sup>The Chinese University of Hong Kong</span>
+            <span class="author-block"><sup style="color:#007bff;">2</sup>The Chinese University of Hong Kong,</span>
+            <span class="author-block"><sup style="color:#6fbf73;">3</sup>University of Cambridge</span>
           </div>
           <br>
           
@@ -136,7 +131,6 @@
                   <span>Code</span>
                   </a>
               </span>
-
             </div>
 
           </div>
@@ -156,7 +150,7 @@
   <section class="hero teaser">
     <div class="container is-max-desktop">
           <div class="content has-text-centered">
-            <img src="static/images/teaser_poet.png" alt="geometric reasoning" width="100%"/>
+            <img src="static/images/qoft_teaser.png" alt="geometric reasoning" width="50%" height="auto"/>
             <p> POET's three learning phases. Left: illustration; Middle: angle; Right: loss and validation.</p>
           </div>
       </div>
@@ -168,10 +162,10 @@
     <!-- Abstract. -->
     <div class="columns is-centered has-text-centered">
       <div class="column is-four-fifths">
-        <h2 class="title is-3">POET: A New Training Paradigm for Large Language Models</h2>
+        <h2 class="title is-3">Orthogonal Finetuning with LoRA-Competitive Scalability</h2>
         <div class="content has-text-justified">
           <p>
-            While Large language models (LLMs) are driving the rapid advancement of artificial intelligence, effectively and reliably training these large models remains one of the field's most significant challenges. To address this challenge, we propose POET, a novel re<strong>P</strong>arameterized training algorithm that uses <strong>O</strong>rthogonal <strong>E</strong>quivalence <strong>T</strong>ransformation to optimize neurons. Specifically, POET reparameterizes each neuron with two learnable orthogonal matrices and a fixed random weight matrix. Because of its provable preservation of spectral properties of weight matrices, POET can stably optimize the objective function with improved generalization. We further develop efficient approximations that make POET flexible and scalable for training large-scale neural networks. Extensive experiments validate the effectiveness and scalability of POET in training LLMs.
+            Orthogonal finetuning (OFT) offers highly parameter-efficient adaptation while preventing catastrophic forgetting, but its high runtime and memory demands limit practical deployment. We identify the core computational bottleneck in OFT as its weight-centric implementation, which relies on costly matrix-matrix multiplications with cubic complexity. To overcome this, we propose <strong>OFTv2</strong>, an input-centric reformulation that instead uses matrix-vector multiplications (<em>i.e.</em>, matrix-free computation), reducing the computational cost to quadratic. We further introduce the <strong>Cayley–Neumann parameterization</strong>, an efficient orthogonal parameterization that approximates the matrix inversion in Cayley transform via a truncated Neumann series. These modifications allow OFTv2 to achieve up to \(10\times\) faster training and \(3\times\) lower GPU memory usage without compromising performance. In addition, we extend OFTv2 to support finetuning quantized foundation models and show that it outperforms the popular QLoRA in training stability, efficiency, and memory usage.
           </p>
         </div>
       </div>
@@ -184,7 +178,7 @@
 <!-- BUILDING SECTION -->
 <section class="hero is-light is-small">
   <div class="hero-body has-text-centered">
-    <h1 class="title is-1 mmmu">Spectral Property of Weight Matrices</h1>
+    <h1 class="title is-1 mmmu">Orthgonal Finetuning Motivation</h1>
   </div>
 </section>
 
@@ -203,7 +197,6 @@
             </div>
           </div>
         </div>
-
         <div class="columns is-centered has-text-centered">
           <div class="column is-four-fifths">
             <h2 class="title is-3">Spectrum-Preserving Weight Update</h2>
@@ -228,7 +221,11 @@
                 This reparameterization preserves the singular values of weights while allowing flexible optimization of the singular vectors.
               </p>
               <div class="content has-text-centered">
-                <img src="static/images/sv_comp.png" alt="algebraic reasoning" class="center" style="width: 90%; height: auto;">
+                <img src="static/images/orthogonal.png" alt="algebraic reasoning" class="center" style="width: 50%; height: auto;">
+                <p> Visualization of the weight update mechanism of POET-BS and POET-FS after 100 steps of update and \(T_m = 1\). </p>
+              </div>
+              <div class="content has-text-centered">
+                <img src="static/images/toy_exp.png" alt="algebraic reasoning" class="center" style="width: 50%; height: auto;">
                 <p> Visualization of the weight update mechanism of POET-BS and POET-FS after 100 steps of update and \(T_m = 1\). </p>
               </div>
               <br>
@@ -255,7 +252,7 @@
 <!-- BUILDING SECTION -->
 <section class="hero is-light is-small">
   <div class="hero-body has-text-centered">
-    <h1 class="title is-1 mmmu">Training with POET</h1>
+    <h1 class="title is-1 mmmu">Training with OFTv2</h1>
   </div>
 </section>
 
@@ -285,7 +282,7 @@
             <p>
               POET is conceptually simple, requiring only the optimization of two orthogonal matrices. However, these matrices are typically large, and naively optimizing them leads to significant computational challenges. We introduce the <strong>Stochastic Primitive Optimization</strong> (SPO). The core idea of SPO is inspired by how QR factorization is performed using Givens rotations and Householder transformations. Both methods construct a large orthogonal matrix \( \mathbf{R} \) by sequentially applying primitive orthogonal transformations (e.g., Givens rotations or Householder reflections), i.e., \( \mathbf{R} = \prod_{i=1}^c \mathbf{G}_i \), where \( \mathbf{G}_i \) denotes the \( i \)-th primitive orthogonal matrix. While each \( \mathbf{G}_i \) is of the same size as \( \mathbf{R} \), it is parameterized by significantly fewer degrees of freedom. Both Givens rotation and Householder reflection use relatively low-capacity parameterizations—for example, each Givens rotation \( \mathbf{G}_i \) involves only a single effective parameter—which limits their efficiency in representing the full orthogonal matrix. SPO follows a similar idea of factorizing the original orthogonal matrix into multiple primitive orthogonal matrices. However, unlike Givens and Householder methods, SPO treats the number of effective parameters in each primitive matrix as a tunable hyperparameter and adopts a stochastic sparsity pattern.
             </p>
-            <img src="static/images/block_pattern.png" alt="algebraic reasoning" class="center" style="width: 100%; height: auto;">
+            <img src="static/images/mem_comp.png" alt="algebraic reasoning" class="center" style="width: 100%; height: auto;">
             <br>
             <ul>
               <li>
@@ -349,89 +346,248 @@
             <p>
               We perform the pretraining experiments on the Llama transformers of varying sizes (60M, 130M, 350M, 1.3B) for POET. We use the C4 dataset, a cleaned web crawl corpus from Common Crawl, widely used for LLM pretraining. The training results are summarized below, the validation perplexity and the trainable parameters are reported.
             </p>
+
             <div class="table-container">
-              <table>
+              <table class="results-table">
                 <thead>
                   <tr>
-                    <th>Model (# tokens)</th>
-                    <th>60M (30B)</th>
-                    <th>130M (40B)</th>
-                    <th>350M (40B)</th>
-                    <th>1.3B (50B)</th>
+                    <th rowspan="2"><strong>Model</strong></th>
+                    <th rowspan="2"><strong>Type</strong></th>
+                    <th rowspan="2"><strong># Params</strong></th>
+                    <th rowspan="2"><strong>AMC23</strong></th>
+                    <th rowspan="2"><strong>AQUA</strong></th>
+                    <th rowspan="2"><strong>CMATH</strong></th>
+                    <th><strong>GaoKao</strong></th>
+                    <th><strong>Minerva</strong></th>
+                    <th><strong>Olympiad/</strong></th>
+                    <th><strong>SAT</strong></th>
+                  </tr>
+                  <tr>
+                    <th><strong>2023 En</strong></th>
+                    <th><strong>Math</strong></th>
+                    <th><strong>Bench</strong></th>
+                    <th><strong>Math</strong></th>
                   </tr>
                 </thead>
                 <tbody>
+                  <!-- Qwen2.5-1.5B-it -->
                   <tr>
-                    <td>AdamW</td>
-                    <td>26.68 (25.30M)</td>
-                    <td>20.82 (84.93M)</td>
-                    <td>16.78 (302.38M)</td>
-                    <td>14.73 (1.21B)</td>
+                    <td rowspan="3"><strong>Qwen2.5-1.5B-it</strong></td>
+                    <td><strong>baseline</strong></td>
+                    <td>-</td>
+                    <td>17.5</td>
+                    <td>49.2</td>
+                    <td>65.2</td>
+                    <td>36.4</td>
+                    <td>9.6</td>
+                    <td>12.0</td>
+                    <td>59.4</td>
                   </tr>
                   <tr>
-                    <td>Galore</td>
-                    <td>29.81 (25.30M)</td>
-                    <td>22.35 (84.93M)</td>
-                    <td>17.99 (302.38M)</td>
-                    <td>18.33 (1.21B)</td>
+                    <td><strong>QLoRA</strong></td>
+                    <td>18.46M</td>
+                    <td>15.0</td>
+                    <td>42.5</td>
+                    <td>61.5</td>
+                    <td>29.6</td>
+                    <td>8.1</td>
+                    <td>8.9</td>
+                    <td>59.4</td>
+                  </tr>
+                  <tr class="highlight-row">
+                    <td><strong>QOFT</strong></td>
+                    <td>7.89M</td>
+                    <td><strong>27.5</strong></td>
+                    <td><strong>53.1</strong></td>
+                    <td><strong>68.5</strong></td>
+                    <td><strong>41.0</strong></td>
+                    <td><strong>11.8</strong></td>
+                    <td><strong>14.4</strong></td>
+                    <td><strong>81.2</strong></td>
+                  </tr>
+            
+                  <!-- Qwen2.5-1.5B -->
+                  <tr>
+                    <td rowspan="3"><strong>Qwen2.5-1.5B</strong></td>
+                    <td><strong>baseline</strong></td>
+                    <td>-</td>
+                    <td>0.0</td>
+                    <td>18.9</td>
+                    <td>4.0</td>
+                    <td>4.2</td>
+                    <td>2.6</td>
+                    <td>2.4</td>
+                    <td>28.1</td>
                   </tr>
                   <tr>
-                    <td>LoRA<sub>r=64</sub></td>
-                    <td>39.70 (4.85M)</td>
-                    <td>32.07 (11.21M)</td>
-                    <td>25.19 (30.28M)</td>
-                    <td>20.55 (59.38M)</td>
+                    <td><strong>QLoRA</strong></td>
+                    <td>18.46M</td>
+                    <td>15.0</td>
+                    <td>37.4</td>
+                    <td><strong>64.2</strong></td>
+                    <td>26.8</td>
+                    <td><strong>8.5</strong></td>
+                    <td>6.8</td>
+                    <td>62.5</td>
                   </tr>
-                  <tr style="background-color: #f5f7fa;">
-                    <td>POET<sub>BS, b=64</sub></td>
-                    <td>29.52 (2.39M)</td>
-                    <td>24.52 (5.52M)</td>
-                    <td>20.29 (14.90M)</td>
-                    <td>18.28 (29.22M)</td>
+                  <tr class="highlight-row">
+                    <td><strong>QOFT</strong></td>
+                    <td>7.89M</td>
+                    <td><strong>22.5</strong></td>
+                    <td><strong>53.1</strong></td>
+                    <td>56.3</td>
+                    <td><strong>36.1</strong></td>
+                    <td><strong>8.5</strong></td>
+                    <td><strong>12.7</strong></td>
+                    <td><strong>87.5</strong></td>
                   </tr>
-                  <tr style="background-color: #f5f7fa;">
-                    <td>POET<sub>BS, b=128</sub></td>
-                    <td>26.90 (4.81M)</td>
-                    <td>21.86 (11.12M)</td>
-                    <td>18.05 (30.04M)</td>
-                    <td>16.24 (58.91M)</td>
+            
+                  <!-- Qwen2.5-7B-it -->
+                  <tr>
+                    <td rowspan="3"><strong>Qwen2.5-7B-it</strong></td>
+                    <td><strong>baseline</strong></td>
+                    <td>-</td>
+                    <td>50.0</td>
+                    <td>16.5</td>
+                    <td>89.3</td>
+                    <td>61.8</td>
+                    <td><strong>33.5</strong></td>
+                    <td>36.6</td>
+                    <td>53.1</td>
                   </tr>
-                  <tr style="background-color: #f5f7fa;">
-                    <td>POET<sub>BS, b=256</sub></td>
-                    <td><b>25.29</b> (9.66M)</td>
-                    <td><b>19.88</b> (22.33M)</td>
-                    <td>16.27 (60.32M)</td>
-                    <td>14.56 (118.26M)</td>
+                  <tr>
+                    <td><strong>QLoRA</strong></td>
+                    <td>40.37M</td>
+                    <td>30.0</td>
+                    <td>48.0</td>
+                    <td>88.8</td>
+                    <td>50.1</td>
+                    <td>25.4</td>
+                    <td>19.7</td>
+                    <td>68.8</td>
                   </tr>
-                  <tr style="background-color: #f5f7fa;">
-                    <td>POET<sub>FS, b=1/8</sub></td>
-                    <td>34.06 (0.53M)</td>
-                    <td>29.67 (1.78M)</td>
-                    <td>24.61 (6.34M)</td>
-                    <td>18.46 (25.39M)</td>
+                  <tr class="highlight-row">
+                    <td><strong>QOFT</strong></td>
+                    <td>17.55M</td>
+                    <td><strong>52.5</strong></td>
+                    <td><strong>70.9</strong></td>
+                    <td><strong>90.5</strong></td>
+                    <td><strong>63.6</strong></td>
+                    <td><strong>33.5</strong></td>
+                    <td><strong>37.6</strong></td>
+                    <td><strong>96.9</strong></td>
                   </tr>
-                  <tr style="background-color: #f5f7fa;">
-                    <td>POET<sub>FS, b=1/4</sub></td>
-                    <td>28.69 (2.13M)</td>
-                    <td>23.55 (7.13M)</td>
-                    <td>19.42 (25.44M)</td>
-                    <td>17.60 (101.66M)</td>
+            
+                  <!-- Qwen2.5-7B -->
+                  <tr>
+                    <td rowspan="3"><strong>Qwen2.5-7B</strong></td>
+                    <td><strong>baseline</strong></td>
+                    <td>-</td>
+                    <td>25.0</td>
+                    <td>55.1</td>
+                    <td>61.2</td>
+                    <td>42.9</td>
+                    <td>11.8</td>
+                    <td>29.9</td>
+                    <td>71.9</td>
                   </tr>
-                  <tr style="background-color: #f5f7fa;">
-                    <td>POET<sub>FS, b=1/2</sub></td>
-                    <td>25.37 (8.54M)</td>
-                    <td>19.94 (28.56M)</td>
-                    <td><b>15.95</b> (101.86M)</td>
-                    <td><b>13.70</b> (406.88M)</td>
+                  <tr>
+                    <td><strong>QLoRA</strong></td>
+                    <td>40.37M</td>
+                    <td>35.0</td>
+                    <td>48.8</td>
+                    <td>73.7</td>
+                    <td>49.9</td>
+                    <td>18.8</td>
+                    <td>18.5</td>
+                    <td>62.5</td>
+                  </tr>
+                  <tr class="highlight-row">
+                    <td><strong>QOFT</strong></td>
+                    <td>17.55M</td>
+                    <td><strong>52.5</strong></td>
+                    <td><strong>59.4</strong></td>
+                    <td><strong>80.7</strong></td>
+                    <td><strong>55.6</strong></td>
+                    <td><strong>21.7</strong></td>
+                    <td><strong>34.7</strong></td>
+                    <td><strong>87.5</strong></td>
+                  </tr>
+            
+                  <!-- Qwen2.5-32B-it -->
+                  <tr>
+                    <td rowspan="3"><strong>Qwen2.5-32B-it</strong></td>
+                    <td><strong>baseline</strong></td>
+                    <td>-</td>
+                    <td>62.5</td>
+                    <td>18.5</td>
+                    <td>92.5</td>
+                    <td>70.1</td>
+                    <td><strong>41.5</strong></td>
+                    <td>44.4</td>
+                    <td>65.6</td>
+                  </tr>
+                  <tr>
+                    <td><strong>QLoRA</strong></td>
+                    <td>134.22M</td>
+                    <td>62.5</td>
+                    <td>71.7</td>
+                    <td>94.0</td>
+                    <td>71.2</td>
+                    <td>39.7</td>
+                    <td>46.8</td>
+                    <td>96.9</td>
+                  </tr>
+                  <tr class="highlight-row">
+                    <td><strong>QOFT</strong></td>
+                    <td>57.90M</td>
+                    <td><strong>75.0</strong></td>
+                    <td><strong>83.1</strong></td>
+                    <td><strong>94.7</strong></td>
+                    <td><strong>73.5</strong></td>
+                    <td><strong>41.5</strong></td>
+                    <td><strong>48.7</strong></td>
+                    <td><strong>100.0</strong></td>
+                  </tr>
+            
+                  <!-- Qwen2.5-32B -->
+                  <tr>
+                    <td rowspan="3"><strong>Qwen2.5-32B</strong></td>
+                    <td><strong>baseline</strong></td>
+                    <td>-</td>
+                    <td>35.0</td>
+                    <td>23.2</td>
+                    <td>35.7</td>
+                    <td>46.8</td>
+                    <td>20.2</td>
+                    <td>25.2</td>
+                    <td>62.5</td>
+                  </tr>
+                  <tr>
+                    <td><strong>QLoRA</strong></td>
+                    <td>134.22M</td>
+                    <td>40.0</td>
+                    <td>52.4</td>
+                    <td>90.5</td>
+                    <td>61.0</td>
+                    <td>32.0</td>
+                    <td>29.8</td>
+                    <td>65.6</td>
+                  </tr>
+                  <tr class="highlight-row">
+                    <td><strong>QOFT</strong></td>
+                    <td>57.90M</td>
+                    <td><strong>70.0</strong></td>
+                    <td><strong>68.5</strong></td>
+                    <td><strong>90.7</strong></td>
+                    <td><strong>71.4</strong></td>
+                    <td><strong>36.0</strong></td>
+                    <td><strong>44.9</strong></td>
+                    <td><strong>93.8</strong></td>
                   </tr>
                 </tbody>
               </table>
-            </div> 
-            <img src="static/images/val_ppl.png" alt="algebraic reasoning" class="center" style="width: 90%; height: auto;">
-            <br>
-          </div>
-        </div>
-      </div>
+            </div>
 
       <div class="columns is-centered has-text-centered">
         <div class="column is-four-fifths">
@@ -614,11 +770,24 @@
   <div class="container is-max-desktop content">
     <h2 class="title is-3 has-text-centered">BibTeX</h2>
     <pre><code>
-      @article{qiu2024can, 
-        title={Can Large Language Models Understand Symbolic Graphics Programs?}, 
-        author={Qiu, Zeju and Liu, Weiyang and Feng, Haiwen and Liu, Zhen and Xiao, Tim Z and Collins, Katherine M and Tenenbaum, Joshua B and Weller, Adrian and Black, Michael J and Sch{\"o}lkopf, Bernhard}, 
-        journal={arXiv preprint arXiv:2408.08313}, 
-        year={2024} 
+      @misc{qiu2024controllingtexttoimagediffusionorthogonal,
+            title={Controlling Text-to-Image Diffusion by Orthogonal Finetuning}, 
+            author={Zeju Qiu and Weiyang Liu and Haiwen Feng and Yuxuan Xue and Yao Feng and Zhen Liu and Dan Zhang and Adrian Weller and Bernhard Schölkopf},
+            year={2024},
+            eprint={2306.07280},
+            archivePrefix={arXiv},
+            primaryClass={cs.CV},
+            url={https://arxiv.org/abs/2306.07280}, 
+      }
+
+      @misc{liu2024parameterefficientorthogonalfinetuningbutterfly,
+        title={Parameter-Efficient Orthogonal Finetuning via Butterfly Factorization}, 
+        author={Weiyang Liu and Zeju Qiu and Yao Feng and Yuliang Xiu and Yuxuan Xue and Longhui Yu and Haiwen Feng and Zhen Liu and Juyeon Heo and Songyou Peng and Yandong Wen and Michael J. Black and Adrian Weller and Bernhard Schölkopf},
+        year={2024},
+        eprint={2311.06243},
+        archivePrefix={arXiv},
+        primaryClass={cs.LG},
+        url={https://arxiv.org/abs/2311.06243}, 
       }
     </code></pre>
   </div>
