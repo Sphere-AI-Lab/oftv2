@@ -1,5 +1,5 @@
 # Orthogonal Finetuning Family
-The official project page of the collection of orthogonal finetuning projects.
+A collection of **Orthogonal Finetuning** related projects.
 
 <!--
 🎉 We are happy to announce that our paper "CReparameterized LLM Training via Orthogonal
