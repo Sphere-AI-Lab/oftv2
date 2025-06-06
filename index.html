@@ -265,17 +265,24 @@
                 <p> Visualization of the weight update mechanism of POET-BS and POET-FS after 100 steps of update and \(T_m = 1\). </p>
               </div>
               <br>
-              <p>
-                Our proposed POET has two key properties:
-                <ul>
-                  <li>
-                    <strong>Strong spectrum control:</strong> Because orthogonal transformations do not change the singular values of weight matrices, POET keeps the weight spectrum the same as the randomly initialized weight matrices (empirically validated even with approximations). Through the initialization scheme, POET thus directly controls the singular value distribution of its weight matrices. As a result, and in contrast to standard LLM training, POET matrices avoid undesirable large singular values after training. To further facilitate the POET algorithm, we introduce two new initialization schemes: <strong>normalized Gaussian initialization</strong> and <strong>uniform spectrum initialization</strong>, which can ensure the resulting weight matrices have bounded singular values.
-                  </li>
-                  <li>
-                    <strong>Efficient approximation:</strong> While a naive implementation of POET can be computationally expensive, its inherent flexibility opens up opportunities for efficient and scalable training. To address the key challenge of optimizing large orthogonal matrices, we introduce two levels of approximations: <em>stochastic primitive optimization</em>, which factorizes a large orthogonal matrix \( \mathbf{R} \in \mathbb{R}^{m \times m} \) into a product of primitive orthogonal matrices with fewer trainable parameters and uses a merge-then-reinitialize trick for efficiency, and <em>approximate orthogonality via Cayley-Neumann parameterization</em>, which maintains orthogonality with low computational overhead by approximating the Cayley orthogonal parameterization with Neumann series and also benefits from the merge-then-reinitialize trick to prevent error accumulation.
-                  </li>
-                </ul>
-              </p>
+              <div class="columns is-centered has-text-centered">
+                <div class="column is-four-fifths">
+                  <h2 class="title is-3">Weight Update Evenness of Different POET Variants</h2>
+                  <div class="content has-text-justified">
+                    <p>
+                      To understand the higher parameter efficiency of POET-BS compared to POET-FS, we employ a toy example to visualize their different weight update mechanisms by counting the total number of updates for each element of the weight matrix. The visualization results are given below. Specifically, in this experiment, a 64 x 64 matrix was randomly initialized and trained for 100 steps under various POET-BS and POET-FS configurations. The merge-then-reinitialize trick is performed at each iteration, and the same set of weight elements was effectively updated between two successive merge-then-reinitialize operations. For each weight element, we compute its total number of update in these 100 steps. 
+                    </p>
+                    <div class="content has-text-centered">
+                      <img src="static/images/comp_lora.png" alt="algebraic reasoning" class="center" style="width: 90%; height: auto;">
+                      <p> Visualization of the weight update mechanism of POET-BS and POET-FS after 100 steps of update and $\` T_m = 1 \`$. </p>
+                    </div> 
+                    <div class="content has-text-centered">
+                      <img src="static/images/seq_para.png" alt="algebraic reasoning" class="center" style="width: 90%; height: auto;">
+                      <p> Visualization of the weight update mechanism of POET-BS and POET-FS after 100 steps of update and $\` T_m = 1 \`$. </p>
+                    </div> 
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
         </div>
@@ -326,11 +333,23 @@ model.print_trainable_parameters()</code></pre>
           <h2 class="title is-3">Training with Huggingface TRL</h2>
           <div class="content has-text-justified">
             <p>OFT works as a drop-in replacement for LoRA in TRL—simply replace <code>LoraConfig</code> with <code>OFTConfig</code> to use it for <code>SFT</code>, <code>PPO</code>, or <code>DPO</code> fine-tuning:</p>
-<pre><code>from transformers import AutoTokenizer, AutoModelForCausalLM
+<pre><code>from transformers import AutoTokenizer, AutoModelForCausalLM, BitsAndBytesConfig
 from trl import SFTTrainer
 from peft import OFTConfig
 
-model = AutoModelForCausalLM.from_pretrained("model_name")
+if use_quantization:
+  bnb_config = BitsAndBytesConfig(
+    load_in_4bit=True,
+    bnb_4bit_quant_type="nf4",
+    bnb_4bit_compute_dtype=torch.bfloat16,
+    bnb_4bit_use_double_quant=True,
+    bnb_4bit_quant_storage=torch.bfloat16,
+  )
+
+model = AutoModelForCausalLM.from_pretrained(
+  "model_name", 
+  quantization_config=bnb_config
+)
 tokenizer = AutoTokenizer.from_pretrained("model_name")
 
 # Configure OFT
@@ -724,7 +743,7 @@ trainer.train()</code></pre>
 <!-- BUILDING SECTION -->
 <section class="hero is-light is-small">
   <div class="hero-body has-text-centered">
-    <h1 id="SIT" class="title is-1 mmmu">Discussions and Intriging Insights</h1>
+    <h1 id="SIT" class="title is-1 mmmu">Explore Related Projects</h1>
   </div>
 </section>
 
@@ -737,7 +756,30 @@ trainer.train()</code></pre>
       <div class="container">
         <div class="columns is-centered has-text-centered">
           <div class="column is-four-fifths">
-            <h2 class="title is-3">Connection to Generalization Theory</h2>
+            <h2 class="title is-3">Orthogonal Finetuning V1</h2>
+            <div class="column has-text-centered">
+              <div class="publication-links">
+                <!-- PDF Link. -->
+                <span class="link-block">
+                  <!-- @PAN TODO: change links -->
+                  <a href="https://arxiv.org/abs/2306.07280"
+                     class="external-link button is-normal is-rounded is-dark">
+                    <span class="icon">
+                        <i class="fas fa-file-pdf"></i>
+                    </span>
+                    <span>Paper</span>
+                  </a>
+                </span>
+                <span class="link-block">
+                  <a href="https://oft.wyliu.com/"
+                     class="external-link button is-normal is-rounded is-dark">
+                    <span class="icon">
+                        <i class="fab fa-github"></i>
+                    </span>
+                    <span>Website</span>
+                    </a>
+                </span>
+              </div>
             <div class="content has-text-justified">
               <p>
                 Several previous works generalization results based on bounding the spectral norm of weight matrices. In particular, the spectrally-normalized margin analysis from Bartlett et al. bounds the misclassification error in terms of a margin-based training loss and a complexity term. The complexity term is proportional to 
@@ -757,19 +799,8 @@ trainer.train()</code></pre>
                 \( \lVert \mathbf{W} \rVert_F = O(\sqrt{d}) \)
                 so that \( Q = O_L(d) \). For detailed analysis, please refer to the Appendix of the paper.
               </p>
-            </div>
-          </div>
-        </div>
-
-        <div class="columns is-centered has-text-centered">
-          <div class="column is-four-fifths">
-            <h2 class="title is-3">Performance under a constant parameter budget</h2>
-            <div class="content has-text-justified">
-              <p>
-                Since POET optimizes two orthogonal matrices \( \mathbf{R}, \mathbf{P} \) simultaneously, a natural question arises: <em>which matrix should receive more parameter budget under a fixed total constraint?</em> To investigate this, we conduct a controlled experiment where different ratios of trainable parameters are allocated to \( \mathbf{R} \) and \( \mathbf{P} \) under a fixed total budget. All other settings (e.g., architecture, data) remain unchanged, with full details provided in the Appendix. We use validation perplexity as the evaluation metric. The total parameter budget matches that of fully stochastic POET with \( b = \frac{1}{h}m \) for \( \mathbf{R} \) and \( b = \frac{1}{h}n \) for \( \mathbf{P} \), where \( h = 8 \), \( 4 \), and \( 3 \) correspond to small, medium, and large budgets, respectively. The results show that POET with a balanced allocation between \( \mathbf{R} \) and \( \mathbf{P} \) yields the best performance.
-              </p>
               <div class="content has-text-centered">
-                <img src="static/images/budget.png" alt="algebraic reasoning" class="center" style="width: 50%; height: auto;">
+                <img src="static/images/oft_teaser.png" alt="algebraic reasoning" class="center" style="width: 100%; height: auto;">
                 <p> Performance of POET under a constant total parameter budget on \( \mathbf{R} \) and \( \mathbf{P} \). </p>
               </div> 
             </div>
@@ -778,14 +809,28 @@ trainer.train()</code></pre>
 
         <div class="columns is-centered has-text-centered">
           <div class="column is-four-fifths">
-            <h2 class="title is-3">Weight Update Evenness of Different POET Variants</h2>
+            <h2 class="title is-3">A even more parameter-efficient Formulation with Butterfly Factorization</h2>
+            <div class="column has-text-centered">
+              <div class="publication-links">
+                <!-- PDF Link. -->
+                <span class="link-block">
+                  <!-- @PAN TODO: change links -->
+                  <a href="https://arxiv.org/abs/2311.06243/"
+                     class="external-link button is-normal is-rounded is-dark">
+                    <span class="icon">
+                        <i class="fas fa-file-pdf"></i>
+                    </span>
+                    <span>Paper</span>
+                  </a>
+                </span>
+              </div>
             <div class="content has-text-justified">
               <p>
-                To understand the higher parameter efficiency of POET-BS compared to POET-FS, we employ a toy example to visualize their different weight update mechanisms by counting the total number of updates for each element of the weight matrix. The visualization results are given below. Specifically, in this experiment, a 64 x 64 matrix was randomly initialized and trained for 100 steps under various POET-BS and POET-FS configurations. The merge-then-reinitialize trick is performed at each iteration, and the same set of weight elements was effectively updated between two successive merge-then-reinitialize operations. For each weight element, we compute its total number of update in these 100 steps. 
+                Since POET optimizes two orthogonal matrices \( \mathbf{R}, \mathbf{P} \) simultaneously, a natural question arises: <em>which matrix should receive more parameter budget under a fixed total constraint?</em> To investigate this, we conduct a controlled experiment where different ratios of trainable parameters are allocated to \( \mathbf{R} \) and \( \mathbf{P} \) under a fixed total budget. All other settings (e.g., architecture, data) remain unchanged, with full details provided in the Appendix. We use validation perplexity as the evaluation metric. The total parameter budget matches that of fully stochastic POET with \( b = \frac{1}{h}m \) for \( \mathbf{R} \) and \( b = \frac{1}{h}n \) for \( \mathbf{P} \), where \( h = 8 \), \( 4 \), and \( 3 \) correspond to small, medium, and large budgets, respectively. The results show that POET with a balanced allocation between \( \mathbf{R} \) and \( \mathbf{P} \) yields the best performance.
               </p>
               <div class="content has-text-centered">
-                <img src="static/images/coverage_plot.png" alt="algebraic reasoning" class="center" style="width: 90%; height: auto;">
-                <p> Visualization of the weight update mechanism of POET-BS and POET-FS after 100 steps of update and $\` T_m = 1 \`$. </p>
+                <img src="static/images/boft_teaser.png" alt="algebraic reasoning" class="center" style="width: 40%; height: auto;">
+                <p> Performance of POET under a constant total parameter budget on \( \mathbf{R} \) and \( \mathbf{P} \). </p>
               </div> 
             </div>
           </div>
