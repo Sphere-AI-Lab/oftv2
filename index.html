@@ -750,97 +750,93 @@ trainer.train()</code></pre>
 
 <section class="section">
   <div class="container">
-
-    <!-------------------------------------------------------------------- RESULTS SECTION -------------------------------------------------------------------->
-    <section class="section">
-      <div class="container">
-        <div class="columns is-centered has-text-centered">
-          <div class="column is-four-fifths">
-            <h2 class="title is-3">Orthogonal Finetuning V1</h2>
-            <div class="column has-text-centered">
-              <div class="publication-links">
-                <!-- PDF Link. -->
-                <span class="link-block">
-                  <!-- @PAN TODO: change links -->
-                  <a href="https://arxiv.org/abs/2306.07280"
-                     class="external-link button is-normal is-rounded is-dark">
-                    <span class="icon">
-                        <i class="fas fa-file-pdf"></i>
-                    </span>
-                    <span>Paper</span>
-                  </a>
+    <div class="columns is-centered has-text-centered">
+      <div class="column is-four-fifths">
+        <h2 class="title is-3">Orthogonal Finetuning V1</h2>
+        <div class="column has-text-centered">
+          <div class="publication-links">
+            <!-- PDF Link. -->
+            <span class="link-block">
+              <!-- @PAN TODO: change links -->
+              <a href="https://arxiv.org/abs/2306.07280"
+                 class="external-link button is-normal is-rounded is-dark">
+                <span class="icon">
+                    <i class="fas fa-file-pdf"></i>
                 </span>
-                <span class="link-block">
-                  <a href="https://oft.wyliu.com/"
-                     class="external-link button is-normal is-rounded is-dark">
-                    <span class="icon">
-                        <i class="fab fa-github"></i>
-                    </span>
-                    <span>Website</span>
-                    </a>
+                <span>Paper</span>
+              </a>
+            </span>
+            <span class="link-block">
+              <a href="https://oft.wyliu.com/"
+                 class="external-link button is-normal is-rounded is-dark">
+                <span class="icon">
+                    <i class="fab fa-github"></i>
                 </span>
-              </div>
-            <div class="content has-text-justified">
-              <p>
-                Several previous works generalization results based on bounding the spectral norm of weight matrices. In particular, the spectrally-normalized margin analysis from Bartlett et al. bounds the misclassification error in terms of a margin-based training loss and a complexity term. The complexity term is proportional to 
-                \( Q/(\gamma n) \) where \( \gamma \) and \( n \) are margin and sample size and \( Q \)
-                bounds the spectral complexity. For an \( L \)-layer ReLU MLP
-                and maximal width \( d \), \( Q \) is bounded by
-              </p>
-              <div style="text-align: center;">
-                <p>
-                  \( Q = \left( \prod_{i=1}^L \lVert \mathbf{W}_i \rVert \right) \left( \sum_{i=1}^L \frac{(\sqrt{d} \lVert \mathbf{W}_i \rVert_F)^{2/3} }{ \lVert \mathbf{W}_i \rVert^{2/3} } \right)^{3/2} \)
-                </p>
-              </div>
-              <p>
-                where \( \lVert \cdot \rVert \)
-                and \( \lVert \cdot \rVert_F \) denote spectral and Frobenius norm respectively. Those norms remain invariant when training the network with POET and at initialization they can be bounded with high probability using standard results from random matrix theory.
-                The scale at initialization is typically chosen such that \( \mathbf{W} \in \mathbb{R}^{d \times d} \) satisfies \( \lVert \mathbf{W} \rVert = O(1) \) and
-                \( \lVert \mathbf{W} \rVert_F = O(\sqrt{d}) \)
-                so that \( Q = O_L(d) \). For detailed analysis, please refer to the Appendix of the paper.
-              </p>
-              <div class="content has-text-centered">
-                <img src="static/images/oft_teaser.png" alt="algebraic reasoning" class="center" style="width: 95%; height: auto;">
-                <p> Performance of POET under a constant total parameter budget on \( \mathbf{R} \) and \( \mathbf{P} \). </p>
-              </div> 
-            </div>
+                <span>Website</span>
+                </a>
+            </span>
           </div>
-        </div>
-
-        <div class="columns is-centered has-text-centered">
-          <div class="column is-four-fifths">
-            <h2 class="title is-3">A even more parameter-efficient Formulation with Butterfly Factorization</h2>
-            <div class="column has-text-centered">
-              <div class="publication-links">
-                <!-- PDF Link. -->
-                <span class="link-block">
-                  <!-- @PAN TODO: change links -->
-                  <a href="https://arxiv.org/abs/2311.06243/"
-                     class="external-link button is-normal is-rounded is-dark">
-                    <span class="icon">
-                        <i class="fas fa-file-pdf"></i>
-                    </span>
-                    <span>Paper</span>
-                  </a>
-                </span>
-              </div>
-            <div class="content has-text-justified">
-              <p>
-                Since POET optimizes two orthogonal matrices \( \mathbf{R}, \mathbf{P} \) simultaneously, a natural question arises: <em>which matrix should receive more parameter budget under a fixed total constraint?</em> To investigate this, we conduct a controlled experiment where different ratios of trainable parameters are allocated to \( \mathbf{R} \) and \( \mathbf{P} \) under a fixed total budget. All other settings (e.g., architecture, data) remain unchanged, with full details provided in the Appendix. We use validation perplexity as the evaluation metric. The total parameter budget matches that of fully stochastic POET with \( b = \frac{1}{h}m \) for \( \mathbf{R} \) and \( b = \frac{1}{h}n \) for \( \mathbf{P} \), where \( h = 8 \), \( 4 \), and \( 3 \) correspond to small, medium, and large budgets, respectively. The results show that POET with a balanced allocation between \( \mathbf{R} \) and \( \mathbf{P} \) yields the best performance.
-              </p>
-              <div class="content has-text-centered">
-                <img src="static/images/boft_teaser.png" alt="algebraic reasoning" class="center" style="width: 40%; height: auto;">
-                <p> Performance of POET under a constant total parameter budget on \( \mathbf{R} \) and \( \mathbf{P} \). </p>
-              </div> 
-            </div>
+        <div class="content has-text-justified">
+          <p>
+            Several previous works generalization results based on bounding the spectral norm of weight matrices. In particular, the spectrally-normalized margin analysis from Bartlett et al. bounds the misclassification error in terms of a margin-based training loss and a complexity term. The complexity term is proportional to 
+            \( Q/(\gamma n) \) where \( \gamma \) and \( n \) are margin and sample size and \( Q \)
+            bounds the spectral complexity. For an \( L \)-layer ReLU MLP
+            and maximal width \( d \), \( Q \) is bounded by
+          </p>
+          <div style="text-align: center;">
+            <p>
+              \( Q = \left( \prod_{i=1}^L \lVert \mathbf{W}_i \rVert \right) \left( \sum_{i=1}^L \frac{(\sqrt{d} \lVert \mathbf{W}_i \rVert_F)^{2/3} }{ \lVert \mathbf{W}_i \rVert^{2/3} } \right)^{3/2} \)
+            </p>
           </div>
+          <p>
+            where \( \lVert \cdot \rVert \)
+            and \( \lVert \cdot \rVert_F \) denote spectral and Frobenius norm respectively. Those norms remain invariant when training the network with POET and at initialization they can be bounded with high probability using standard results from random matrix theory.
+            The scale at initialization is typically chosen such that \( \mathbf{W} \in \mathbb{R}^{d \times d} \) satisfies \( \lVert \mathbf{W} \rVert = O(1) \) and
+            \( \lVert \mathbf{W} \rVert_F = O(\sqrt{d}) \)
+            so that \( Q = O_L(d) \). For detailed analysis, please refer to the Appendix of the paper.
+          </p>
+          <div class="content has-text-centered">
+            <img src="static/images/oft_teaser.png" alt="algebraic reasoning" class="center" style="width: 95%; height: auto;">
+            <p> Performance of POET under a constant total parameter budget on \( \mathbf{R} \) and \( \mathbf{P} \). </p>
+          </div> 
         </div>
-
       </div>
-    </section>
     </div>
-  </section>
+  </div>
+</section>
 
+<section class="section">
+  <div class="container">
+    <div class="columns is-centered has-text-centered">
+      <div class="column is-four-fifths">
+        <h2 class="title is-3">A even more parameter-efficient Formulation with Butterfly Factorization</h2>
+        <div class="column has-text-centered">
+          <div class="publication-links">
+            <!-- PDF Link. -->
+            <span class="link-block">
+              <!-- @PAN TODO: change links -->
+              <a href="https://arxiv.org/abs/2311.06243/"
+                 class="external-link button is-normal is-rounded is-dark">
+                <span class="icon">
+                    <i class="fas fa-file-pdf"></i>
+                </span>
+                <span>Paper</span>
+              </a>
+            </span>
+          </div>
+        <div class="content has-text-justified">
+          <p>
+            Since POET optimizes two orthogonal matrices \( \mathbf{R}, \mathbf{P} \) simultaneously, a natural question arises: <em>which matrix should receive more parameter budget under a fixed total constraint?</em> To investigate this, we conduct a controlled experiment where different ratios of trainable parameters are allocated to \( \mathbf{R} \) and \( \mathbf{P} \) under a fixed total budget. All other settings (e.g., architecture, data) remain unchanged, with full details provided in the Appendix. We use validation perplexity as the evaluation metric. The total parameter budget matches that of fully stochastic POET with \( b = \frac{1}{h}m \) for \( \mathbf{R} \) and \( b = \frac{1}{h}n \) for \( \mathbf{P} \), where \( h = 8 \), \( 4 \), and \( 3 \) correspond to small, medium, and large budgets, respectively. The results show that POET with a balanced allocation between \( \mathbf{R} \) and \( \mathbf{P} \) yields the best performance.
+          </p>
+          <div class="content has-text-centered">
+            <img src="static/images/boft_teaser.png" alt="algebraic reasoning" class="center" style="width: 40%; height: auto;">
+            <p> Performance of POET under a constant total parameter budget on \( \mathbf{R} \) and \( \mathbf{P} \). </p>
+          </div> 
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
 
 
 
