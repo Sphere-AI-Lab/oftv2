@@ -800,7 +800,7 @@ trainer.train()</code></pre>
                 so that \( Q = O_L(d) \). For detailed analysis, please refer to the Appendix of the paper.
               </p>
               <div class="content has-text-centered">
-                <img src="static/images/oft_teaser.png" alt="algebraic reasoning" class="center" style="width: 100%; height: auto;">
+                <img src="static/images/oft_teaser.png" alt="algebraic reasoning" class="center" style="width: 95%; height: auto;">
                 <p> Performance of POET under a constant total parameter budget on \( \mathbf{R} \) and \( \mathbf{P} \). </p>
               </div> 
             </div>
@@ -832,53 +832,6 @@ trainer.train()</code></pre>
                 <img src="static/images/boft_teaser.png" alt="algebraic reasoning" class="center" style="width: 40%; height: auto;">
                 <p> Performance of POET under a constant total parameter budget on \( \mathbf{R} \) and \( \mathbf{P} \). </p>
               </div> 
-            </div>
-          </div>
-        </div>
-
-        <div class="columns is-centered has-text-centered">
-          <div class="column is-four-fifths">
-            <h2 class="title is-3">Neumann Series Approximation of POET.</h2>
-            <div class="content has-text-justified">
-              <p>
-                CNP approximates the matrix inverse using a Neumann series. As the number of Neumann terms directly influences the approximation quality, understanding its impact on model performance is essential. To this end, we evaluate how varying the number of Neumann terms affects performance, using POET-FS with \( b = 1/2 \) to train LLaMA-130M. Results in the following table show that increasing the number of Neumann terms generally improves validation perplexity. However, this also leads to slower training. Moreover, Using only 1 Neumann term (\( k=1 \)) leads to training divergence, highlighting the critical role of maintaining orthogonality. To balance overhead and performance, we find that using 5 Neumann terms is a good trade-off.
-              </p>
-              <div class="content has-text-centered">
-                <img src="static/images/ortho_error.png" alt="algebraic reasoning" class="center" style="width: 90%; height: auto;">
-                <p> Approximation error of orthogonal matrices \( \mathbf{R} \) and \( \mathbf{P} \) of a weight matrix. </p>
-              </div> 
-              <div style="text-align: center;">
-                <table style="width: auto; border-collapse: collapse; margin: 1em auto;">
-                  <thead>
-                    <tr>
-                      <th style="padding: 8px; border-bottom: 2px solid #ddd; text-align: left;"><strong>Scheme</strong></th>
-                      <th style="padding: 8px; border-bottom: 2px solid #ddd; text-align: left;"><strong>Perplexity</strong></th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <tr>
-                      <td style="padding: 8px;">\( k=1 \)</td>
-                      <td style="padding: 8px;">Not converged</td>
-                    </tr>
-                    <tr>
-                      <td style="padding: 8px;">\( k=2 \)</td>
-                      <td style="padding: 8px;">22.56</td>
-                    </tr>
-                    <tr>
-                      <td style="padding: 8px;">\( k=3 \)</td>
-                      <td style="padding: 8px;">21.54</td>
-                    </tr>
-                    <tr>
-                      <td style="padding: 8px;">\( k=4 \)</td>
-                      <td style="padding: 8px;">20.22</td>
-                    </tr>
-                    <tr>
-                      <td style="padding: 8px;">\( k=5 \)</td>
-                      <td style="padding: 8px;"><strong>20.19</strong></td>
-                    </tr>
-                  </tbody>
-                </table>
-              </div>
             </div>
           </div>
         </div>
