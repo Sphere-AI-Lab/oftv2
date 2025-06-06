@@ -60,6 +60,42 @@
     src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js">
   </script>
 
+  <style>
+  /* Add to your existing styles */
+  pre {
+    background-color: #f8f9fa;
+    border: 1px solid #e9ecef;
+    border-radius: 8px;
+    padding: 1rem;
+    overflow-x: auto;
+    font-family: 'Monaco', 'Consolas', 'Courier New', monospace;
+    font-size: 0.9em;
+    line-height: 1.4;
+    color: #333;
+  }
+
+  code {
+    background-color: #f8f9fa;
+    padding: 0.2em 0.4em;
+    border-radius: 3px;
+    font-family: 'Monaco', 'Consolas', 'Courier New', monospace;
+    font-size: 0.9em;
+    color: #d73a49; /* For inline code */
+  }
+
+  pre code {
+    background-color: transparent;
+    padding: 0;
+    color: #333; /* For code blocks */
+  }
+
+  /* Syntax highlighting colors */
+  .keyword { color: #0077aa; }
+  .string { color: #669900; }
+  .comment { color: #999999; font-style: italic; }
+  .number { color: #ff6600; }
+  </style>
+
 </head>
 <body>
 
@@ -264,13 +300,58 @@
     <div class="container">
       <div class="columns is-centered has-text-centered">
         <div class="column is-four-fifths">
-          <h2 class="title is-3">Training Algorithm</h2>
+          <h2 class="title is-3">Training with Huggingface PEFT</h2>
           <div class="content has-text-justified">
-            <p><strong>Step 1: Initialization.</strong> We initialize the weight matrices using normalized Gaussian: \( \mathbf{W} \leftarrow \mathbf{W}_0 \).</p>
-            <p><strong>Step 2: Orthogonal matrix initialization.</strong> For fully stochastic SPO, we randomly sample an index set \( \mathbf{S} \), and parameterize \( \tilde{\mathbf{G}}_{R} \in \mathbb{R}^{b \times b} \) and \( \tilde{\mathbf{G}}_{P} \in \mathbb{R}^{b \times b} \) using CNP. Both matrices are initialized as identity, so \( \mathbf{R} \) and \( \mathbf{P} \) also start as identity matrices. For block-stochastic SPO, we sample a random permutation matrix \( \mathbf{\Psi}_R, \mathbf{\Psi}_P \), and parameterize \( \{ \tilde{\mathbf{G}}_R^{1}, \cdots, \tilde{\mathbf{G}}_R^{\lceil m/b \rceil} \} \) and \( \{ \tilde{\mathbf{G}}_P^{1}, \cdots, \tilde{\mathbf{G}}_P^{\lceil m/b \rceil} \} \) using CNP. Then we initialize them as the identity, so \( \mathbf{R} \) and \( \mathbf{P} \) again start as identity matrices.</p>
-            <p><strong>Step 3: Efficient orthogonal parameterization.</strong> For fully stochastic SPO, we have \( \mathbf{R} = \mathbf{I}_m + \mathbf{D}(\mathbf{S})(\tilde{\mathbf{G}}_R - \mathbf{I}_b)\mathbf{D}(\mathbf{S})^\top \) and \( \mathbf{P} = \mathbf{I}_m + \mathbf{D}(\mathbf{S})(\tilde{\mathbf{G}}_P - \mathbf{I}_b)\mathbf{D}(\mathbf{S})^\top \). For block-stochastic SPO, we have \( \mathbf{R} = \mathbf{\Psi}_R^\top \mathrm{Diag}(\tilde{\mathbf{G}}^1_R, \cdots, \tilde{\mathbf{G}}^{\lceil m/b \rceil}_R)\mathbf{\Psi}_R \) and \( \mathbf{P} = \mathbf{\Psi}_P^\top \mathrm{Diag}(\tilde{\mathbf{G}}^1_P, \cdots, \tilde{\mathbf{G}}^{\lceil m/b \rceil}_P)\mathbf{\Psi}_P \).</p>
-            <p><strong>Step 4: Inner training loop for updating orthogonal matrices.</strong> The equivalent weight matrix in the forward pass is \( \mathbf{R}\mathbf{W}\mathbf{P} \). Gradients are backpropagated through \( \mathbf{R} \) and \( \mathbf{P} \) to update \( \tilde{\mathbf{G}}_{R}, \tilde{\mathbf{G}}_{P} \) (fully stochastic) or \( \tilde{\mathbf{G}}_{R}^i, \tilde{\mathbf{G}}_{P}^i, \forall i \) (block-stochastic). This inner loop runs for a fixed number of iterations.</p>
-            <p><strong>Step 5: Merge-then-reinitialize.</strong> The learned orthogonal matrices \( \mathbf{R} \) and \( \mathbf{P} \) are merged into the weight matrix by \( \mathbf{W} \leftarrow \mathbf{R}\mathbf{W}\mathbf{P} \). If not terminated, return to <strong>Step 2</strong> for reinitialization.</p>
+            <p>OFT can be easily used as a drop-in replacement for LoRA, simply replace the <code>LoraConfig</code> with <code>OFTConfig</code>:</p>
+            <pre><code>from peft import get_peft_model, OFTConfig
+
+# Configure OFT
+peft_config = OFTConfig(
+    r=0,  # Not used in OFT, kept for compatibility
+    oft_block_size=128,
+    target_modules="all-linear",
+    bias="none",
+    task_type="CAUSAL_LM"
+)
+
+model = get_peft_model(model, peft_config)
+
+model.print_trainable_parameters()</code></pre>
+          </div>
+        </div>
+      </div>
+
+      <div class="columns is-centered has-text-centered">
+        <div class="column is-four-fifths">
+          <h2 class="title is-3">Training with Huggingface TRL</h2>
+          <div class="content has-text-justified">
+            <p>OFT works as a drop-in replacement for LoRA in TRL—simply replace <code>LoraConfig</code> with <code>OFTConfig</code> to use it for <code>SFT</code>, <code>PPO</code>, or <code>DPO</code> fine-tuning:</p>
+<pre><code>from transformers import AutoTokenizer, AutoModelForCausalLM
+from trl import SFTTrainer
+from peft import OFTConfig
+
+model = AutoModelForCausalLM.from_pretrained("model_name")
+tokenizer = AutoTokenizer.from_pretrained("model_name")
+
+# Configure OFT
+peft_config = OFTConfig(
+    r=0,
+    oft_block_size=128,
+    target_modules="all-linear",
+    bias="none",
+    task_type="CAUSAL_LM"
+)
+
+trainer = SFTTrainer(
+    model=model,
+    train_dataset=ds['train'],
+    peft_config=peft_config,
+    tokenizer=tokenizer,
+    args=training_arguments,
+    data_collator=collator,
+)
+
+trainer.train()</code></pre>
           </div>
         </div>
       </div>
