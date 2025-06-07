@@ -1,12 +1,26 @@
-# Orthogonal Finetuning Family
-A collection of **Orthogonal Finetuning** related projects.
+# OFTv2
 
-<!--
-🎉 We are happy to announce that our paper "CReparameterized LLM Training via Orthogonal
-Equivalence Transformation" has been selected as **spotlight** at **NeurIPS 2025**. 🎉
--->
+This repository contains the official implementation for the paper:
 
-This website is adapted from [MMMU](https://mmmu-benchmark.github.io/), [MathVista](https://mathvista.github.io/) and [SGP-Bench](https://sgp-bench.github.io/).
+**Orthogonal Finetuning Made Scalable** ([paper](https://arxiv.org)).
 
-# Website License
-<a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/"><img alt="Creative Commons License" style="border-width:0" src="https://i.creativecommons.org/l/by-sa/4.0/88x31.png" /></a><br />This work is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/">Creative Commons Attribution-ShareAlike 4.0 International License</a>.
+
+## Status
+
+🚧 **Work in Progress** 🚧
+
+This codebase is currently under development. The implementation will be made available soon.
+
+
+## Citation
+
+If you find this work useful in your research, please cite our paper:
+
+```bibtex
+@article{reparameterized_llm_training,
+  title={Reparameterized LLM Training via Orthogonal Equivalence Transformation},
+  author={[Authors]},
+  journal={arXiv preprint arXiv:XXXX.XXXXX},
+  year={2024}
+}
+```
