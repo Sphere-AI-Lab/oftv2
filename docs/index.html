@@ -183,12 +183,12 @@
     width: 80%;
   }
   </style>
+
   <section class="hero teaser">
     <div class="container is-max-desktop">
-          <div class="content has-text-centered">
-            <img src="static/images/qoft_teaser.png" alt="geometric reasoning" width="50%" height="auto"/>
-            <p> POET's three learning phases. Left: illustration; Middle: angle; Right: loss and validation.</p>
-          </div>
+      <div class="content has-text-centered">
+        <img src="static/images/qoft_teaser.png" alt="geometric reasoning" width="50%" height="auto"/>
+        <p> OFTv2 significantly reduces training time and GPU memory usage without sacrificing performance.</p>
       </div>
     </div>
   </section>
@@ -203,6 +203,10 @@
           <p>
             Orthogonal finetuning (OFT) offers highly parameter-efficient adaptation while preventing catastrophic forgetting, but its high runtime and memory demands limit practical deployment. We identify the core computational bottleneck in OFT as its weight-centric implementation, which relies on costly matrix-matrix multiplications with cubic complexity. To overcome this, we propose <strong>OFTv2</strong>, an input-centric reformulation that instead uses matrix-vector multiplications (<em>i.e.</em>, matrix-free computation), reducing the computational cost to quadratic. We further introduce the <strong>Cayley–Neumann parameterization</strong>, an efficient orthogonal parameterization that approximates the matrix inversion in Cayley transform via a truncated Neumann series. These modifications allow OFTv2 to achieve up to \(10\times\) faster training and \(3\times\) lower GPU memory usage without compromising performance. In addition, we extend OFTv2 to support finetuning quantized foundation models and show that it outperforms the popular QLoRA in training stability, efficiency, and memory usage.
           </p>
+          <div class="content has-text-centered">
+            <img src="static/images/mem_comp.png" alt="algebraic reasoning" class="center" style="width: 100%; height: auto;">
+            <p>Results of GPU memory usage for the same finetuning task.</p>
+          </div>
         </div>
       </div>
     </div>
@@ -314,8 +318,8 @@
 
 # Configure OFT
 peft_config = OFTConfig(
-    r=0,  # Not used in OFT, kept for compatibility
-    oft_block_size=128,
+    r=0,
+    oft_block_size=32,
     target_modules="all-linear",
     bias="none",
     task_type="CAUSAL_LM"
@@ -324,6 +328,13 @@ peft_config = OFTConfig(
 model = get_peft_model(model, peft_config)
 
 model.print_trainable_parameters()</code></pre>
+            <p><strong>Important:</strong> <code>r</code> x <code>oft_block_size</code> should be equal to <code>in_features</code> of the target module, e.g., <code>in_features = 4096</code> and <code>oft_block_size = 32</code> leads to <code>r = 128</code>. For simplicity, we let the user speficy either <code>r</code> or <code>oft_block_size</code> and infer the other one. We advice the user to specify <code>oft_block_size</code> for better clarity.</p>
+            <p>Key configuration parameters explained:</p>
+            <ul>
+              <li><strong>r:</strong> specifies the number of OFT blocks. Smaller values uses more parameters (i.e., bigger block sizes). Typically, we set <code>r = 0</code> set the <code>oft_block_size</code>.</li>
+              <li><strong>oft_block_size:</strong> controls the size of the OFT blocks. Smaller values use fewer parameters but may be less expressive, while larger values provide more flexibility at the cost of increased memory usage.</li>
+              <li><strong>use_cayley_neumann:</strong> Specifies which layers to apply OFT to. Use <code>"all-linear"</code> for all linear layers, or specify particular modules like <code>["q_proj", "v_proj"]</code> for attention layers only.</li>
+            </ul>
           </div>
         </div>
       </div>
