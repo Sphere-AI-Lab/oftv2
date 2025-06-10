@@ -222,78 +222,67 @@
   </div>
 </section>
 
+<!-- SECTION 1 -->
 <section class="section">
   <div class="container">
-    <!-------------------------------------------------------------------- RESULTS SECTION -------------------------------------------------------------------->
-    <section class="section">
-      <div class="container">
-        <div class="columns is-centered has-text-centered">
-          <div class="column is-four-fifths">
-            <h2 class="title is-3">Spectral Perperties and Generalization</h2>
-            <div class="content has-text-justified">
-              <p>
-                The <i>de facto</i> way for training LLMs is to directly optimize weight matrices with the Adam optimizer. While conceptually simple, this direct optimization can be computationally intensive (due to the poor scaling with model size) and requires careful hyperparameter tuning to ensure stable convergence. More importantly, its generalization can remain suboptimal even if the training loss is perfectly minimized. To stabilize training and enhance generalization, various weight regularization methods and weight normalization techniques have been proposed. Most of these methods boil down to improving spectral properties of weight matrices (<i>i.e.</i>, singular values) either explicitly or implicitly. Intuitively, the spectral norm of a weight matrix (<i>i.e.</i>, the largest singular value) provides an upper bound on how much a matrix can amplify the input vectors, which connects to the generalization properties. In general, smaller spectral norms (<i>i.e.</i>, better smoothness) are considered to be associated with stronger generalization, which inspires explicit spectrum control. Theoretical results also suggest that weight matrices with bounded spectrum can provably guarantee generalization.
-              </p>
-            </div>
-          </div>
+    <div class="columns is-centered has-text-centered">
+      <div class="column is-four-fifths">
+        <h2 class="title is-3">Orthogonal Transformation Well Preserves the Pre-trained Knowledge</h2>
+        <div class="content has-text-justified">
+          <p>
+            We draw inspiration from the empirical observation in that angular feature difference well characterizes the semantic gap. SphereNet shows that training a neural network with all neurons normalized onto a unit hypersphere yields comparable capacity and even better generalizability, implying that the direction of neurons can fully capture the most important information from data. To better demonstrate the importance of <strong>neuron angles</strong>, we conduct a toy experiment where we train a standard convolutional autoencoder on some flower images. In the training stage, we use the standard inner product to produce the feature map (\(z\) denotes the element output of the convolution kernel \(\mathbf{w}\) and \(\mathbf{x}\) is the input in the sliding window). In the testing stage, we compare three ways to generate the feature map: (a) the inner product used in training, (b) the magnitude information, and (c) the angular information. The results in the following Figure show that the angular information of neurons can almost perfectly recover the input images, while the magnitude of neurons contains no useful information. We emphasize that we do not apply the cosine activation (c) during training, and the training is done only based on inner product. The results imply that the angles (directions) of neurons play the major role in storing the semantic information of the input images. In order to modify the semantic information of images, finetuning the neuron directions will likely be more effective.
+          </p>
         </div>
-        <div class="columns is-centered has-text-centered">
-          <div class="column is-four-fifths">
-            <h2 class="title is-3">Spectrum-Preserving Weight Update</h2>
-            <div class="content has-text-justified">
-              <p>
-                To achieve effective weight spectrum control without the limitations above, we propose POET, a re<u>P</u>arameterized training algorithm that uses <u>O</u>rthogonal <u>E</u>quivalence <u>T</u>ransformation to indirectly learn weight matrices. Specifically, POET reparameterizes a weight matrix 
-                \( \mathbf{W} \in \mathbb{R}^{m \times n} \) 
-                with 
-                \( \mathbf{R} \mathbf{W}_0 \mathbf{P} \)
-                where 
-                \( \mathbf{W}_0 \in \mathbb{R}^{m \times n} \) 
-                is a randomly initialized weight matrix, 
-                \( \mathbf{R} \in \mathbb{R}^{m \times m} \) 
-                and 
-                \( \mathbf{P} \in \mathbb{R}^{n \times n} \) 
-                are two orthogonal matrices. Instead of optimizing weight matrices directly, POET keeps the randomly initialized weight matrix 
-                \( \mathbf{W}_0 \) 
-                unchanged during training and learns two orthogonal matrices 
-                \( \mathbf{R}, \mathbf{P} \) 
-                to transform 
-                \( \mathbf{W}_0 \).
-                This reparameterization preserves the singular values of weights while allowing flexible optimization of the singular vectors.
-              </p>
-              <div class="content has-text-centered">
-                <img src="static/images/orthogonal.png" alt="algebraic reasoning" class="center" style="width: 50%; height: auto;">
-                <p> Visualization of the weight update mechanism of POET-BS and POET-FS after 100 steps of update and \(T_m = 1\). </p>
-              </div>
-              <div class="content has-text-centered">
-                <img src="static/images/toy_exp.png" alt="algebraic reasoning" class="center" style="width: 50%; height: auto;">
-                <p> Visualization of the weight update mechanism of POET-BS and POET-FS after 100 steps of update and \(T_m = 1\). </p>
-              </div>
-              <br>
-              <div class="columns is-centered has-text-centered">
-                <div class="column is-four-fifths">
-                  <h2 class="title is-3">Weight Update Evenness of Different POET Variants</h2>
-                  <div class="content has-text-justified">
-                    <p>
-                      To understand the higher parameter efficiency of POET-BS compared to POET-FS, we employ a toy example to visualize their different weight update mechanisms by counting the total number of updates for each element of the weight matrix. The visualization results are given below. Specifically, in this experiment, a 64 x 64 matrix was randomly initialized and trained for 100 steps under various POET-BS and POET-FS configurations. The merge-then-reinitialize trick is performed at each iteration, and the same set of weight elements was effectively updated between two successive merge-then-reinitialize operations. For each weight element, we compute its total number of update in these 100 steps. 
-                    </p>
-                    <div class="content has-text-centered">
-                      <img src="static/images/comp_lora.png" alt="algebraic reasoning" class="center" style="width: 90%; height: auto;">
-                      <p> Visualization of the weight update mechanism of POET-BS and POET-FS after 100 steps of update and $\` T_m = 1 \`$. </p>
-                    </div> 
-                    <div class="content has-text-centered">
-                      <img src="static/images/seq_para.png" alt="algebraic reasoning" class="center" style="width: 90%; height: auto;">
-                      <p> Visualization of the weight update mechanism of POET-BS and POET-FS after 100 steps of update and $\` T_m = 1 \`$. </p>
-                    </div> 
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
+        <div class="content has-text-centered">
+          <img src="static/images/toy_exp.png" alt="algebraic reasoning" class="center" style="width: 50%; height: auto;">
         </div>
       </div>
-    </section>
     </div>
-  </section>
+  </div>
+</section>
+
+<!-- SECTION 2 -->
+<section class="section">
+  <div class="container">
+    <div class="columns is-centered has-text-centered">
+      <div class="column is-four-fifths">
+        <h2 class="title is-3">Why Does Orthogonal Transformation Make Sense?</h2>
+        <div class="content has-text-justified">
+          <p>
+            We perform an experiment to demonstrate the effective regularization induced by the orthogonality constraint. We perform the controllable generation experiment using the setting of ControlNet, and the results are given in the following Figure. We can observe that our standard OFT performs quite stably and achieves accurate control after the training is finished (epoch 20). In comparison, OFT without the orthogonality constraint fails to generate any realistic image and achieve no control effect. The experiment validates the importance of the orthogonality constraint in OFT.
+          </p>
+        </div>
+        <div class="content has-text-centered">
+          <img src="static/images/orthogonal.png" alt="algebraic reasoning" class="center" style="width: 60%; height: auto;">
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SECTION 3 -->
+<section class="section">
+  <div class="container">
+    <div class="columns is-centered has-text-centered">
+      <div class="column is-four-fifths">
+        <h2 class="title is-3">OFT vs LoRA: Two Distinct Roads to Efficient Fine-tuning</h2>
+        <div class="content has-text-justified">
+          <p>
+            To understand the higher parameter efficiency of POET-BS compared to POET-FS, we employ a toy example to visualize their different weight update mechanisms by counting the total number of updates for each element of the weight matrix. The visualization results are given below. Specifically, in this experiment, a 64 x 64 matrix was randomly initialized and trained for 100 steps under various POET-BS and POET-FS configurations. The merge-then-reinitialize trick is performed at each iteration, and the same set of weight elements was effectively updated between two successive merge-then-reinitialize operations. For each weight element, we compute its total number of update in these 100 steps.
+          </p>
+        </div>
+        <div class="content has-text-centered">
+          <img src="static/images/comp_lora.png" alt="algebraic reasoning" class="center" style="width: 80%; height: auto;">
+          <p>Comparison between low-rank adaptation (e.g., LoRA) and orthogonal finetuning (e.g., OFT).</p>
+        </div>
+        <div class="content has-text-centered">
+          <img src="static/images/seq_para.png" alt="algebraic reasoning" class="center" style="width: 90%; height: auto;">
+          <p>Comparison between sequential adaptation (e.g., LoRA) and parallel adaptation (e.g., OFT).</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
 
 
 <!-- BUILDING SECTION -->
@@ -328,13 +317,13 @@ peft_config = OFTConfig(
 model = get_peft_model(model, peft_config)
 
 model.print_trainable_parameters()</code></pre>
-            <p><strong>Important:</strong> <code>r</code> x <code>oft_block_size</code> should be equal to <code>in_features</code> of the target module, e.g., <code>in_features = 4096</code> and <code>oft_block_size = 32</code> leads to <code>r = 128</code>. For simplicity, we let the user speficy either <code>r</code> or <code>oft_block_size</code> and infer the other one. We advice the user to specify <code>oft_block_size</code> for better clarity.</p>
-            <p>Key configuration parameters explained:</p>
-            <ul>
-              <li><strong>r:</strong> specifies the number of OFT blocks. Smaller values uses more parameters (i.e., bigger block sizes). Typically, we set <code>r = 0</code> set the <code>oft_block_size</code>.</li>
-              <li><strong>oft_block_size:</strong> controls the size of the OFT blocks. Smaller values use fewer parameters but may be less expressive, while larger values provide more flexibility at the cost of increased memory usage.</li>
-              <li><strong>use_cayley_neumann:</strong> Specifies which layers to apply OFT to. Use <code>"all-linear"</code> for all linear layers, or specify particular modules like <code>["q_proj", "v_proj"]</code> for attention layers only.</li>
-            </ul>
+              <p><strong>Important:</strong> <code>r</code> x <code>oft_block_size</code> should be equal to <code>in_features</code> of the target module, e.g., <code>in_features = 4096</code> and <code>oft_block_size = 32</code> leads to <code>r = 128</code>. For simplicity, we let the user speficy either <code>r</code> or <code>oft_block_size</code> and infer the other one. We advice the user to specify <code>oft_block_size</code> for better clarity.</p>
+              <p>Key configuration parameters explained:</p>
+              <ul>
+                <li><strong>r:</strong> specifies the number of OFT blocks. Smaller values uses more parameters (i.e., bigger block sizes). Typically, we set <code>r = 0</code> set the <code>oft_block_size</code>.</li>
+                <li><strong>oft_block_size:</strong> controls the size of the OFT blocks. Smaller values use fewer parameters but may be less expressive, while larger values provide more flexibility at the cost of increased memory usage.</li>
+                <li><strong>use_cayley_neumann:</strong> Specifies which layers to apply OFT to. Use <code>"all-linear"</code> for all linear layers, or specify particular modules like <code>["q_proj", "v_proj"]</code> for attention layers only.</li>
+              </ul>
           </div>
         </div>
       </div>
@@ -366,7 +355,7 @@ tokenizer = AutoTokenizer.from_pretrained("model_name")
 # Configure OFT
 peft_config = OFTConfig(
     r=0,
-    oft_block_size=128,
+    oft_block_size=32,
     target_modules="all-linear",
     bias="none",
     task_type="CAUSAL_LM"
@@ -385,62 +374,16 @@ trainer.train()</code></pre>
           </div>
         </div>
       </div>
-
-      <div class="columns is-centered has-text-centered">
-        <div class="column is-four-fifths">
-          <h2 class="title is-3">Efficient Approximation to Orthogonality</h2>
-          <div class="content has-text-justified">
-            <p>
-              POET is conceptually simple, requiring only the optimization of two orthogonal matrices. However, these matrices are typically large, and naively optimizing them leads to significant computational challenges. We introduce the <strong>Stochastic Primitive Optimization</strong> (SPO). The core idea of SPO is inspired by how QR factorization is performed using Givens rotations and Householder transformations. Both methods construct a large orthogonal matrix \( \mathbf{R} \) by sequentially applying primitive orthogonal transformations (e.g., Givens rotations or Householder reflections), i.e., \( \mathbf{R} = \prod_{i=1}^c \mathbf{G}_i \), where \( \mathbf{G}_i \) denotes the \( i \)-th primitive orthogonal matrix. While each \( \mathbf{G}_i \) is of the same size as \( \mathbf{R} \), it is parameterized by significantly fewer degrees of freedom. Both Givens rotation and Householder reflection use relatively low-capacity parameterizations—for example, each Givens rotation \( \mathbf{G}_i \) involves only a single effective parameter—which limits their efficiency in representing the full orthogonal matrix. SPO follows a similar idea of factorizing the original orthogonal matrix into multiple primitive orthogonal matrices. However, unlike Givens and Householder methods, SPO treats the number of effective parameters in each primitive matrix as a tunable hyperparameter and adopts a stochastic sparsity pattern.
-            </p>
-            <img src="static/images/mem_comp.png" alt="algebraic reasoning" class="center" style="width: 100%; height: auto;">
-            <br>
-            <ul>
-              <li>
-                <strong>Fully stochastic SPO.</strong> The basic idea of fully stochastic SPO is to randomly sample a small submatrix and enforce its orthogonality, allowing it to be easily extended to a full orthogonal matrix by embedding it within an identity matrix—a process similar to Givens or Householder transformations. To represent a large orthogonal matrix \( \mathbf{R} \in \mathbb{R}^{m \times m} \), we start by defining \( c \) index sets \( \mathbf{S}^j = \{ s^j_1, \cdots, s^j_b \} \subseteq \{ 1, \cdots, m \} \) (\( j \in [1, c] \)), where each set has cardinality \( |\mathbf{S}^j| = b \), a hyperparameter controlling the number of effective parameters of a primitive orthogonal matrix. \( \mathbf{S}^j, \forall j \) are randomly sampled from the full indices \( \{ 1, \cdots, m \} \). Let \( \tilde{\mathbf{G}}_j \in \mathbb{R}^{b \times b} \) be a small orthogonal matrix, and \( \mathbf{D}(\mathbf{S}^j) = \{ \mathbf{e}(s^j_1), \cdots, \mathbf{e}(s^j_b) \} \in \mathbb{R}^{m \times b} \) be a selection matrix, where \( \mathbf{e}(k) \) is the standard basis vector with a 1 in the \( k \)-th position and 0 elsewhere. The factorization is given by:
-                <br><br>
-                <span style="display:block; text-align:center;">
-                  \( \mathbf{R} = \prod_{i=1}^c \left( \underbrace{ \mathbf{I}_m + \mathbf{D}(\mathbf{S}^i) \cdot (\tilde{\mathbf{G}}_i - \mathbf{I}_b) \cdot \mathbf{D}(\mathbf{S}^i)^\top }_{ \mathbf{G}_i\text{: The } i\text{-th primitive orthogonal matrix} } \right), \quad \text{s.t.}~ \tilde{\mathbf{G}}_i^\top \tilde{\mathbf{G}}_i = \tilde{\mathbf{G}}_i \tilde{\mathbf{G}}_i^\top = \mathbf{I}_b,~\forall i \)
-                </span>
-                <br>
-                where \( \mathbf{D}(\mathbf{S}^i) \cdot (\mathbf{A}) \cdot \mathbf{D}(\mathbf{S}^i)^\top \) is a projector that replaces the \( b \times b \) sub-block with \( \mathbf{A} \). \( \mathbf{I}_m \) and \( \mathbf{I}_b \) are identity matrices of size \( m \times m \) and \( b \times b \), respectively. To efficiently parameterize small orthogonal matrices \( \tilde{\mathbf{G}}_i \), we can use the CNP introduced in the next section.
-              </li>
-              <li>
-                <strong>Block-stochastic SPO.</strong> While fully stochastic SPO is simple, it may fail to transform all neuron dimensions because the identity matrix leaves part of the space unchanged. To address this, we propose block-stochastic SPO, which first constructs a block-diagonal orthogonal matrix with small blocks for parameter efficiency, and then applies a random permutation to enhance expressiveness by randomizing the sparsity pattern. Block-stochastic SPO transforms all neuron dimensions simultaneously. Formally, we have:
-                <br><br>
-                <span style="display:block; text-align:center;">
-                  \( \mathbf{R} = \prod_{i=1}^c \left( \underbrace{ \mathbf{\Psi}_i^\top \cdot \mathrm{Diag}(\tilde{\mathbf{G}}^1_i, \tilde{\mathbf{G}}^2_i, \cdots, \tilde{\mathbf{G}}^{\lceil m/b \rceil}_i) \cdot \mathbf{\Psi}_i }_{ \mathbf{G}_i\text{: The } i\text{-th primitive orthogonal matrix} } \right), \quad \text{s.t.}~ (\tilde{\mathbf{G}}_i^j)^\top \tilde{\mathbf{G}}_i^j = \tilde{\mathbf{G}}_i^j (\tilde{\mathbf{G}}_i^j)^\top = \mathbf{I}_b,~\forall i, j \)
-                </span>
-                <br>
-                where \( \tilde{\mathbf{G}}^j_i \in \mathbb{R}^{b \times b} \) is the \( j \)-th block of the block diagonal matrix, and \( \mathbf{\Psi}_i, \forall i \) are all random permutation matrices. As long as each diagonal block \( \tilde{\mathbf{G}}^j_i \) is an orthogonal matrix, both \( \mathbf{G}_i \) and \( \mathbf{R} \) are also orthogonal matrices. We also use CNP to efficiently parameterize each orthogonal block \( \tilde{\mathbf{G}}^j_i \).
-              </li>
-              <li>
-                <strong>Cayley-Neumann Parameterization (CNP)</strong>
-                <p>
-                  The classic Cayley parameterization generates an orthogonal matrix \(\mathbf{R}\) in the form of \(\mathbf{R}=(\mathbf{I}+\mathbf{Q})(\mathbf{I}-\mathbf{Q})^{-1}\) where \(\mathbf{Q}\) is a skew-symmetric matrix satisfying \(\mathbf{Q}=-\mathbf{Q}^\top\). A minor caveat of this parameterization is that it only produces orthogonal matrices with determinant \(1\) (i.e., elements of the special orthogonal group), but empirical results in Orthogonal Finetuning (OFT) indicate that this constraint does not hurt performance. However, the matrix inverse in the original Cayley parameterization introduces numerical instability and computational overhead, limiting its scalability to large orthogonal matrices. To address this, we approximate the matrix inverse using a truncated Neumann series:
-                </p>
-                \begin{equation}\label{eq:cnp}
-                  \mathbf{R}=(\mathbf{I}+\mathbf{Q})(\mathbf{I}-\mathbf{Q})^{-1}=(\mathbf{I}+\mathbf{Q})\cdot\big(\sum_{i=0}^\infty \mathbf{Q}^i \big) \approx (\mathbf{I}+\mathbf{Q})\cdot\big(\mathbf{I}+\sum_{i=1}^k \mathbf{Q}^i \big),
-                \end{equation}
-                <p>
-                  where a larger number of approximation terms \(k\) leads to a smaller approximation error. By avoiding matrix inversion, the training stability of POET is improved; however, this comes with a price--the approximation is valid only when the Neumann series converges in the operator norm. To initialize orthogonal matrices as identity, we set \(\mathbf{Q}\) to a zero matrix in CNP, satisfying the convergence condition initially. As the training progresses, however, updates to \(\mathbf{Q}\) may cause its operator norm to exceed \(1\), violating this condition. Fortunately, our merge-then-reinitialize trick mitigates this issue by periodically resetting \(\mathbf{Q}\) to a zero matrix, ensuring its operator norm remains small.
-                </p>
-              </li>
-            </ul>
-          </div>
-        </div>
       </div>
+    </section>
     </div>
   </section>
-  </div>
-</section>
-
 
 
 <!-- BUILDING SECTION -->
 <section class="hero is-light is-small">
   <div class="hero-body has-text-centered">
-    <h1 class="title is-1 mmmu">Beyond AdamW: Fewer Parameters, Lower Perplexity</h1>
+    <h1 class="title is-1 mmmu">OFTv2 Methods</h1>
   </div>
 </section>
 
@@ -452,10 +395,105 @@ trainer.train()</code></pre>
     <div class="container">
       <div class="columns is-centered has-text-centered">
         <div class="column is-four-fifths">
-          <h2 class="title is-3">LLM Pretraining using LLaMA Transformer Architecture</h2>
+          <h2 class="title is-3">From Weight-centric to Input-centric Implementation</h2>
           <div class="content has-text-justified">
             <p>
-              We perform the pretraining experiments on the Llama transformers of varying sizes (60M, 130M, 350M, 1.3B) for POET. We use the C4 dataset, a cleaned web crawl corpus from Common Crawl, widely used for LLM pretraining. The training results are summarized below, the validation perplexity and the trainable parameters are reported.
+              OFT performs finetuning by learning an orthogonal matrix to directly transform the weight matrix, which naturally leads to a weight-centric implementation of the forward pass:
+            </p>
+            <div style="text-align: center; margin: 20px 0;">
+              \[
+                \mathbf{z} = \underbrace{\overbrace{\mathbf{W}_0^\top\mathbf{R}^\top}^{\text{(1) \textbf{Weight transform}: matrix-matrix mult.}}\mathbf{x}}_{\text{(2) \textbf{Linear map}: matrix-vector mult.}}
+              \]
+            </div>
+            <p>
+              The original OFT first performs a weight transform by computing \(\mathbf{W}_{\text{OFT}}^\top=\mathbf{W}_0^\top\mathbf{R}^\top\) (i.e., a matrix-matrix multiplication) and then computes the results of a linear layer with the equivalent weight matrix \(\mathbf{W}_{\text{OFT}}^\top\) (i.e., a matrix-vector multiplication). This incurs \(\mathcal{O}(nd^2)\) complexity due to the matrix-matrix multiplication. Inspired by matrix-free methods for solving linear systems, we observe that OFT's forward pass can be interpreted as two linear maps applied to the input. This leads to an input-centric implementation:
+            </p>
+            <div style="text-align: center; margin: 20px 0;">
+              \[
+                \mathbf{z} = \underbrace{\mathbf{W}_0^\top\overbrace{\mathbf{R}^\top\mathbf{x}}^{\text{(1) \textbf{Linear map}: matrix-vector mult.}}}_{\text{(2) \textbf{Linear map}: matrix-vector mult.}}
+              \]
+            </div>
+            <p>
+              where only two matrix-vector multiplications are required, reducing the complexity from cubic to quadratic: \(\mathcal{O}(nd + d^2)\). This simple conceptual shift in implementation entails substantial speed-up in training time and reduction in GPU memory.
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="columns is-centered has-text-centered">
+    <div class="column is-four-fifths">
+      <h2 class="title is-3">Approximate Orthogonality via Cayley-Neumann Parameterization</h2>
+      <div class="content has-text-justified">
+        <p>
+          The Cayley parameterization constructs an orthogonal matrix \(\mathbf{R}\) as \(\mathbf{R} = (\mathbf{I} + \mathbf{Q})(\mathbf{I} - \mathbf{Q})^{-1}\), where \(\mathbf{Q}\) is a skew-symmetric matrix. One limitation of this formulation is that it only generates rotation matrices, though empirical studies suggest that this restriction does not negatively affect performance. More critically, computing a matrix inverse introduces numerical instability and additional computational overhead, making it challenging to scale to large orthogonal matrices. To avoid numerical instability, we replace the matrix inverse with a truncated Neumann series:
+        </p>
+        <div style="text-align: center; margin: 20px 0;">
+          \[
+            \begin{aligned}
+                \mathbf{R}&=(\mathbf{I}+\mathbf{Q})(\mathbf{I}-\mathbf{Q})^{-1}=(\mathbf{I}+\mathbf{Q})\left(\sum_{i=0}^\infty \mathbf{Q}^i \right) \\
+                &\approx (\mathbf{I}+\mathbf{Q})\left(\mathbf{I}+\sum_{i=1}^k \mathbf{Q}^i \right),
+            \end{aligned}
+          \]
+        </div>
+        <p>
+          where larger \(k\) leads to better approximation. Removing the matrix inversion improves training stability. The Neumann series approximation converges in the operator norm if \(\|\mathbf{Q}\|<1\). This condition is naturally satisfied in practice: to start from the pretrained model, OFT initializes the orthogonal matrix \(\mathbf{R}\) as the identity, which requires \(\mathbf{Q}\) to start as a zero matrix. Since finetuning begins with a small learning rate and typically involves relatively few steps, \(\mathbf{Q}\) tends not to drift far from zero. Empirically, even if \(\|\mathbf{Q}\|\) slightly exceeds \(1\), it does not harm OFT's training stability, as we use only a finite number of Neumann terms.
+        </p>
+        <p>
+          <strong>CUDA kernel for skew-symmetric matrices.</strong> To maximize GPU memory efficiency, we leverage the skew-symmetric structure of \(\mathbf{Q}\in\mathbb{R}^{n\times n}\), where \(Q_{ii} = 0\), \(Q_{ij} = -Q_{ji}\). By storing only the upper triangular part as a vector, we reduce the storage requirement from \(n^2\) to \(\frac{n (n - 1)}{2}\). During the forward pass, \(\mathbf{Q}\) is reconstructed on-the-fly using a highly optimized custom CUDA kernel that significantly accelerates this process.
+        </p>
+      </div>
+    </div>
+  </div>
+  </div>
+</section>
+
+<div class="columns is-centered has-text-centered">
+  <div class="column is-four-fifths">
+    <h2 class="title is-3">QOFT: Adapting OFT to Finetuning Quantized Foundation Models</h2>
+    <div class="content has-text-justified">
+      <p>
+        While PEFT methods primarily aim to reduce optimizer memory by minimizing trainable parameters, the growing scale of foundation models has shifted the memory bottleneck to the pretrained weights themselves. As model dimensions grow, these frozen parameters increasingly dominate memory consumption during training. To address this emerging challenge, we argue that truly scalable OFT must operate directly on quantized model representations, such as NormalFloat4 and AWQ. This represents a critical shift that enables OFT to scale effectively.
+      </p>
+      <p>
+        To this end, we introduce QOFT, a natural extension of OFTv2 for quantized foundation models. QOFT largely follows the framework of QLoRA. Specifically, the quantized low-bit weight matrices are first dequantized to higher precision, after which the parameter-efficient adaptation is carried out in the higher-precision space. Formally, the forward pass of QOFT can be written as:
+      </p>
+      <div style="text-align: center; margin: 20px 0;">
+        \[
+          \mathbf{z} = \underbrace{\text{Dequant}(\mathbf{W}_{\text{quant}})^\top}_{\text{Frozen}}\underbrace{\mathbf{R}^\top}_{\text{Trainable}}\mathbf{x}
+        \]
+      </div>
+      <p>
+        The update of OFTv2's orthogonal matrix \(\mathbf{R}\) is performed in high precision (e.g., BF16). We denote the dequantization function as \(\text{Dequant}(\cdot)\) and follow QLoRA's design by adopting a double quantization strategy, where the quantization parameters of the weight matrices are themselves quantized to further reduce GPU memory usage.
+      </p>
+    </div>
+  </div>
+</div>
+</div>
+</section>
+
+
+
+<!-- BUILDING SECTION -->
+<section class="hero is-light is-small">
+  <div class="hero-body has-text-centered">
+    <h1 class="title is-1 mmmu">Experimental Results</h1>
+  </div>
+</section>
+
+
+<section class="section">
+<div class="container">
+  <!-------------------------------------------------------------------- RESULTS SECTION -------------------------------------------------------------------->
+  <section class="section">
+    <div class="container">
+      <div class="columns is-centered has-text-centered">
+        <div class="column is-four-fifths">
+          <h2 class="title is-3">Finetuning Qwen2.5 for Math Reasoning</h2>
+          <div class="content has-text-justified">
+            <p>
+              We perform supervised finetuning on the Huggingface OpenR1-Math-220k dataset—a large-scale mathematical reasoning corpus containing challenging problems and two to four reasoning traces distilled from DeepSeek R1. Following the evaluation protocol of Qwen2.5-Math, we report pass@1 performance on established math benchmarks. Finetuning was only performed on NormalFloat 4-bit quantized base models due to the substantial memory requirements imposed by the large context window size (16384), necessary for training on a reasoning dataset. The baseline type refers to the pre-trained Qwen2.5 models without any continual training. We observe that QOFT consistently outperforms both QLoRA and baseline models across all evaluated scales and tasks, despite using significantly fewer trainable parameters. The results are reported below:
             </p>
 
             <div class="table-container">
@@ -699,48 +737,6 @@ trainer.train()</code></pre>
                 </tbody>
               </table>
             </div>
-
-      <div class="columns is-centered has-text-centered">
-        <div class="column is-four-fifths">
-          <h2 class="title is-3">Parameter and Memory Complexity</h2>
-          <div class="content has-text-justified">
-            <p>
-              By introducing a hyperparameter \( b \) as the sampling budget, fully stochastic SPO decouples parameter complexity from the size of the weight matrices. With a small \( b \), POET becomes highly parameter-efficient, though at the cost of slower convergence. This offers users a flexible trade-off between efficiency and speed. In contrast, block-stochastic SPO has parameter complexity dependent on the matrix size (i.e., \( m + n \)), making it more scalable than AdamW, which requires \( mn \) trainable parameters. In terms of memory complexity, both POET variants can be much more efficient than AdamW with a suitable sampling budget \( b \). A comparison of parameter and memory complexity is given below:
-            </p>
-            <div style="text-align: center;">
-              <table style="width: auto; border-collapse: collapse; margin: 1em auto;">
-                <thead>
-                  <tr>
-                    <th style="padding: 8px; border-bottom: 2px solid #ddd; text-align: left;"><strong>Method</strong></th>
-                    <th style="padding: 8px; border-bottom: 2px solid #ddd; text-align: center;"># <strong>trainable params</strong></th>
-                    <th style="padding: 8px; border-bottom: 2px solid #ddd; text-align: center;"><strong>Memory cost</strong></th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr>
-                    <td style="padding: 8px;">AdamW</td>
-                    <td style="padding: 8px; text-align: center;">\( mn \)</td>
-                    <td style="padding: 8px; text-align: center;">\( 3mn \)</td>
-                  </tr>
-                  <tr>
-                    <td style="padding: 8px;">GaLore</td>
-                    <td style="padding: 8px; text-align: center;">\( mn \)</td>
-                    <td style="padding: 8px; text-align: center;">\( mn + mr + 2nr \)</td>
-                  </tr>
-                  <tr style="background-color: #f5f7fa;">
-                    <td style="padding: 8px;">POET (FS)</td>
-                    <td style="padding: 8px; text-align: center;">\( b(b-1) \)</td>
-                    <td style="padding: 8px; text-align: center;">\( mn + 3b(b-1) \)</td>
-                  </tr>
-                  <tr style="background-color: #f5f7fa;">
-                    <td style="padding: 8px;">POET (BS)</td>
-                    <td style="padding: 8px; text-align: center;">\( \frac{1}{2}(m+n)(b-1) \)</td>
-                    <td style="padding: 8px; text-align: center;">\( mn + \frac{3}{2}(m+n)(b-1) \)</td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
-            <br>
           </div>
         </div>
       </div>
@@ -749,6 +745,18 @@ trainer.train()</code></pre>
   </div>
 </section>
 
+
+<div class="columns is-centered has-text-centered">
+  <div class="column is-four-fifths">
+    <h2 class="title is-3">DreamBooth Finetuning SD 3.5</h2>
+    <div class="content has-text-centered">
+      <img src="static/images/dm_large.png" alt="algebraic reasoning" class="center" style="width: 100%; height: auto;">
+      <p>Qualitative results from Dreambooth finetuning of Stable Diffusion 3.5 Large (8.1B parameters), with peak allocated GPU memory: LoRA (<strong>52.33 GB</strong>), OFT (<strong>52.32 GB</strong>), QLoRA (<strong>41.60 GB</strong>) and QOFT (<strong>41.53 GB</strong>).</p>
+    </div> 
+  </div>
+</div>
+</div>
+</section>
 
 
 <!-- BUILDING SECTION -->
@@ -835,6 +843,7 @@ trainer.train()</code></pre>
               </a>
             </span>
           </div>
+        </div>f
         <div class="content has-text-justified">
           <p>
             Since POET optimizes two orthogonal matrices \( \mathbf{R}, \mathbf{P} \) simultaneously, a natural question arises: <em>which matrix should receive more parameter budget under a fixed total constraint?</em> To investigate this, we conduct a controlled experiment where different ratios of trainable parameters are allocated to \( \mathbf{R} \) and \( \mathbf{P} \) under a fixed total budget. All other settings (e.g., architecture, data) remain unchanged, with full details provided in the Appendix. We use validation perplexity as the evaluation metric. The total parameter budget matches that of fully stochastic POET with \( b = \frac{1}{h}m \) for \( \mathbf{R} \) and \( b = \frac{1}{h}n \) for \( \mathbf{P} \), where \( h = 8 \), \( 4 \), and \( 3 \) correspond to small, medium, and large budgets, respectively. The results show that POET with a balanced allocation between \( \mathbf{R} \) and \( \mathbf{P} \) yields the best performance.
