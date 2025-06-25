@@ -2,7 +2,7 @@
 
 This repository contains the official implementation for the paper:
 
-**Orthogonal Finetuning Made Scalable** ([paper](https://arxiv.org)).
+**Orthogonal Finetuning Made Scalable** ([paper]([https://arxiv.org](https://arxiv.org/abs/2506.19847))).
 
 
 ## Status
@@ -17,10 +17,10 @@ This codebase is currently under development. The implementation will be made av
 If you find this work useful in your research, please cite our paper:
 
 ```bibtex
-@article{reparameterized_llm_training,
-  title={Reparameterized LLM Training via Orthogonal Equivalence Transformation},
-  author={[Authors]},
-  journal={arXiv preprint arXiv:XXXX.XXXXX},
-  year={2024}
-}
+  @article{qiu2025oftv2,
+      title={Orthogonal Finetuning Made Scalable},
+      author={Qiu, Zeju and Liu, Weiyang and Weller, Adrian and Sch\"olkopf, Bernhard},
+      journal={arXiv preprint arXiv:2506.19847},
+      year={2025}
+  }
 ```
