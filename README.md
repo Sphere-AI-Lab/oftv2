@@ -2,7 +2,7 @@
 
 This repository contains the official implementation for the paper:
 
-**Orthogonal Finetuning Made Scalable** ([paper](https://arxiv.org)).
+**Orthogonal Finetuning Made Scalable** ([paper]([https://arxiv.org](https://arxiv.org/abs/2506.19847))).
 
 
 ## Status
