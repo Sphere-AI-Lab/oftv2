@@ -312,8 +312,8 @@
 
 # Configure OFT
 peft_config = OFTConfig(
-    r=0,
     oft_block_size=32,
+    use_cayley_neumann=True,
     target_modules="all-linear",
     bias="none",
     task_type="CAUSAL_LM"
@@ -327,7 +327,7 @@ model.print_trainable_parameters()</code></pre>
               <ul>
                 <li><strong>r:</strong> specifies the number of OFT blocks. <strong>Smaller</strong> values uses <strong>more</strong> parameters (i.e., bigger block sizes). Typically, we set <code>r = 0</code> set the <code>oft_block_size</code>.</li>
                 <li><strong>oft_block_size:</strong> controls the size of the OFT blocks. <strong>Smaller</strong> values use <strong>fewer</strong> parameters but may be less expressive, while <strong>larger</strong> values provide <strong>more</strong> flexibility at the cost of increased memory usage.</li>
-                <li><strong>use_cayley_neumann:</strong> specifies whether to use the Cayley-Neumann parameterization or use the vanilla Cayley parametrization which includes matrix inversion. Default is <code>True</code>.</li>
+                <li><strong>use_cayley_neumann:</strong> specifies whether to use the Cayley-Neumann parameterization or use the vanilla Cayley parametrization which includes matrix inversion. Default is <code>False</code>. We recommend to set it to <code>True</code> for better efficiency, but performance may be slightly worse. Please test both setting to True and False depending on your needs.</li>
               </ul>
           </div>
         </div>
@@ -359,8 +359,8 @@ tokenizer = AutoTokenizer.from_pretrained("model_name")
 
 # Configure OFT
 peft_config = OFTConfig(
-    r=0,
     oft_block_size=32,
+    use_cayley_neumann=True,
     target_modules="all-linear",
     bias="none",
     task_type="CAUSAL_LM"
